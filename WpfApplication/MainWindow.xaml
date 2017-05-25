@@ -5,28 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication"
         mc:Ignorable="d"
-        Title="PrintScreen Saver" Height="350" Width="525" KeyUp="Window_KeyDown">
+        Title="PrintScreen Saver" Height="350" Width="525" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
-        <Border Margin="10,10,10,0" BorderBrush="Black" Background="#ECECEA" BorderThickness="5">
+        <Border Margin="11,10,9,0" Cursor="Hand" BorderBrush="Black" Background="#ECECEA" BorderThickness="5" SizeChanged="Border_SizeChanged" PreviewMouseLeftButtonDown="img_Preview_PreviewMouseLeftButtonDown">
             <Image Name="img_Preview"></Image>
         </Border>
         <DockPanel Name="panel_Control" Grid.Row="1" IsEnabled="False">
-            <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Margin="10" MaxWidth="200" MinWidth="75"></Button>
-            <TextBox Name="tb_Name" DockPanel.Dock="Right" MinWidth="100" Margin="10"></TextBox>
-            <TextBox Margin="10">
-                <TextBox.Template>
+            <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Margin="10" MaxWidth="200" MinWidth="75" Click="b_Save_Click"></Button>
+            <TextBox Name="tb_Name" DockPanel.Dock="Right" MaxLines="1" MinWidth="100" Margin="10"></TextBox>
+            <ContentControl Name="panel_Directory" Margin="10">
+                <ContentControl.Template>
                     <ControlTemplate>
                         <DockPanel>
-                            <Button Name="b_SetDirectory" DockPanel.Dock="Right" Margin="0">•••</Button>
-                            <TextBox Name="tb_Directory" IsReadOnly="True"></TextBox>
+                            <Button Name="b_SetDirectory" Click="b_SetDirectory_Click" DockPanel.Dock="Right" Margin="0">•••</Button>
+                            <TextBox Name="tb_Directory" MaxLines="1" IsReadOnly="True"></TextBox>
                         </DockPanel>
                     </ControlTemplate>
-                </TextBox.Template>
-            </TextBox>
+                </ContentControl.Template>
+            </ContentControl>
         </DockPanel>
     </Grid>
 </Window>

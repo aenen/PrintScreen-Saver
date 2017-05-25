@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
+using System.IO;
+using WinForms = System.Windows.Forms; // тільки що дізнався, що так можна робити. круто
 
 namespace WpfApplication
 {
@@ -20,26 +24,55 @@ namespace WpfApplication
     /// </summary>
     public partial class MainWindow : Window
     {
-        System.Drawing.Image snap;
+        TextBox tb_Directory;
+        BitmapSource image;   
+             
         public MainWindow()
         {
             InitializeComponent();
         }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        
+        private void img_Preview_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
-            //{
-            //    MessageBox.Show(e.Key.ToString());
-            //}
-
-            //return;
-            if (e.Key == Key.Snapshot && Clipboard.ContainsImage())
+            if (Clipboard.ContainsImage())
             {
-                img_Preview.Source = Clipboard.GetImage();                
+                img_Preview.Source = image = Clipboard.GetImage();
                 panel_Control.IsEnabled = true;
-                //System.Drawing.Image image = (System.Drawing.Image)Clipboard.GetDataObject().GetData(DataFormats.Bitmap);
-                //MessageBox.Show("yes");
+                tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
+            }
+        }
+
+        private void Border_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (img_Preview.Source != null)
+            {
+                Border border = sender as Border;
+                img_Preview.Stretch = img_Preview.Source.Height > border.ActualHeight || img_Preview.Source.Width > border.ActualWidth ? Stretch.Uniform : Stretch.None;
+            }
+        }
+
+        private void b_SetDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            WinForms.FolderBrowserDialog dialog = new WinForms.FolderBrowserDialog();
+            if (dialog.ShowDialog() == WinForms.DialogResult.OK)
+            {
+                tb_Directory.Text = dialog.SelectedPath;
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var template = panel_Directory.Template;
+            tb_Directory = (TextBox)template.FindName("tb_Directory", panel_Directory);
+        }
+
+        private void b_Save_Click(object sender, RoutedEventArgs e)
+        {
+            using (var fileStream = new FileStream(System.IO.Path.Combine(tb_Directory.Text, tb_Name.Text + ".png"), FileMode.Create))
+            {
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(fileStream);
             }
         }
     }
