@@ -17,6 +17,7 @@ using System.Windows.Interop;
 using System.IO;
 using WinForms = System.Windows.Forms; // тільки що дізнався, що так можна робити. круто
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace WpfApplication
 {
@@ -27,23 +28,14 @@ namespace WpfApplication
     {
         TextBox tb_Directory;
         BitmapSource image;
-                     
+        WinForms.NotifyIcon ni = new WinForms.NotifyIcon();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            WinForms.NotifyIcon ni = new WinForms.NotifyIcon();
-            ni.Text = Title;
-            ni.Icon = new System.Drawing.Icon("Tray.ico");
-            ni.Visible = true;
-            ni.Click +=
-                delegate (object sender, EventArgs args)
-                {
-                    this.Show();
-                    this.WindowState = WindowState.Normal;
-                };
         }
-        
+
         private void img_Preview_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (Clipboard.ContainsImage())
@@ -51,6 +43,10 @@ namespace WpfApplication
                 img_Preview.Source = image = Clipboard.GetImage();
                 panel_Control.IsEnabled = true;
                 tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
+
+                RegistryKey rKey = Registry.CurrentUser.OpenSubKey(@"Software\PrintScreen Saver");
+                if (rKey != null && string.IsNullOrEmpty(tb_Directory.Text))
+                    tb_Directory.Text = rKey.GetValue("SavePath").ToString();
             }
         }
 
@@ -76,6 +72,16 @@ namespace WpfApplication
         {
             var template = panel_Directory.Template;
             tb_Directory = (TextBox)template.FindName("tb_Directory", panel_Directory);
+                        
+            ni.Text = Title;
+            ni.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+            ni.Visible = true;
+            ni.Click +=
+                delegate (object sndr, EventArgs args)
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                };
         }
 
         private void b_Save_Click(object sender, RoutedEventArgs e)
@@ -85,12 +91,24 @@ namespace WpfApplication
                 BitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fileStream);
+                AddPathToRegedit(tb_Directory.Text);
             }
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
         {
             if (WindowState == WindowState.Minimized) this.Hide();
+        }
+
+        bool AddPathToRegedit(string path)
+        {
+            RegistryKey rKey = Registry.CurrentUser.OpenSubKey(@"Software\PrintScreen Saver", true);
+            if (rKey == null)
+                rKey = Registry.CurrentUser.OpenSubKey("Software", true).CreateSubKey("PrintScreen Saver");
+            rKey.SetValue("SavePath", path);
+            rKey.Close();
+
+            return true;
         }
     }
 }
