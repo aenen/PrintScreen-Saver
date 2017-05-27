@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.IO;
 using WinForms = System.Windows.Forms; // тільки що дізнався, що так можна робити. круто
+using System.Reflection;
 
 namespace WpfApplication
 {
@@ -25,11 +26,22 @@ namespace WpfApplication
     public partial class MainWindow : Window
     {
         TextBox tb_Directory;
-        BitmapSource image;   
-             
+        BitmapSource image;
+                     
         public MainWindow()
         {
             InitializeComponent();
+
+            WinForms.NotifyIcon ni = new WinForms.NotifyIcon();
+            ni.Text = Title;
+            ni.Icon = new System.Drawing.Icon("Tray.ico");
+            ni.Visible = true;
+            ni.Click +=
+                delegate (object sender, EventArgs args)
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                };
         }
         
         private void img_Preview_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -74,6 +86,11 @@ namespace WpfApplication
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fileStream);
             }
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized) this.Hide();
         }
     }
 }
