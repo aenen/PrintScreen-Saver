@@ -5,13 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication"
         mc:Ignorable="d"
-        Title="PrintScreen Saver" Height="350" Width="525" Loaded="Window_Loaded" StateChanged="Window_StateChanged">
+        Title="PrintScreen Saver" Icon="Tray.ico" Height="350" Width="525" Loaded="Window_Loaded" StateChanged="Window_StateChanged">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
-        <Border Margin="11,10,9,0" Cursor="Hand" BorderBrush="Black" Background="#ECECEA" BorderThickness="5" SizeChanged="Border_SizeChanged" PreviewMouseLeftButtonDown="img_Preview_PreviewMouseLeftButtonDown">
+        <Border Margin="11,10,9,0" Cursor="Hand" BorderThickness="5" SizeChanged="Border_SizeChanged" PreviewMouseLeftButtonDown="img_Preview_PreviewMouseLeftButtonDown">
+            <Border.BorderBrush>
+                <LinearGradientBrush x:Name="lgb_Border" StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="White" Offset="3" />
+                    <GradientStop Color="Black" Offset="0" />
+                </LinearGradientBrush>                
+            </Border.BorderBrush>
+            <Border.Background>
+                <LinearGradientBrush x:Name="lgb_Background" StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="RoyalBlue" Offset="0" />
+                    <GradientStop Color="White" Offset="3" />
+                </LinearGradientBrush>
+            </Border.Background>
             <Image Name="img_Preview"></Image>
         </Border>
         <DockPanel Name="panel_Control" Grid.Row="1" IsEnabled="False">

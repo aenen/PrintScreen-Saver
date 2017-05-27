@@ -18,6 +18,7 @@ using System.IO;
 using WinForms = System.Windows.Forms; // тільки що дізнався, що так можна робити. круто
 using System.Reflection;
 using Microsoft.Win32;
+using System.Windows.Media.Animation;
 
 namespace WpfApplication
 {
@@ -72,7 +73,7 @@ namespace WpfApplication
         {
             var template = panel_Directory.Template;
             tb_Directory = (TextBox)template.FindName("tb_Directory", panel_Directory);
-                        
+
             ni.Text = Title;
             ni.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
             ni.Visible = true;
@@ -82,6 +83,23 @@ namespace WpfApplication
                     this.Show();
                     this.WindowState = WindowState.Normal;
                 };
+            
+            PointAnimation paS = new PointAnimation();
+            paS.From = new Point(0, 0);
+            paS.To = new Point(1, 0);
+            paS.AutoReverse = true;
+            paS.RepeatBehavior = RepeatBehavior.Forever;
+            paS.Duration = new Duration(new TimeSpan(0, 0, 20));
+            PointAnimation paE = new PointAnimation();
+            paE.From = new Point(1, 1);
+            paE.To = new Point(0, 1);
+            paE.AutoReverse = true;
+            paE.RepeatBehavior = RepeatBehavior.Forever;          
+            paE.Duration = new Duration(new TimeSpan(0, 0, 20));
+            lgb_Border.BeginAnimation(LinearGradientBrush.StartPointProperty, paS);
+            lgb_Border.BeginAnimation(LinearGradientBrush.EndPointProperty, paE);
+            lgb_Background.BeginAnimation(LinearGradientBrush.StartPointProperty, paS);
+            lgb_Background.BeginAnimation(LinearGradientBrush.EndPointProperty, paE);
         }
 
         private void b_Save_Click(object sender, RoutedEventArgs e)
