@@ -1,0 +1,34 @@
+﻿<Window x:Class="WpfApplication.WindowSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApplication"
+        xmlns:my="clr-namespace:WpfApplication.Data"
+        mc:Ignorable="d"
+        Title="WindowSettings" Height="300" Width="300" ResizeMode="NoResize">
+    <Grid>
+        <StackPanel Orientation="Vertical" Margin="10">
+            <DockPanel Margin="0,5">
+                <TextBlock DockPanel.Dock="Left" Text="Улюблений колір:"/>
+                <Canvas Name="panel_Color" MaxWidth="100" Cursor="Hand"/>
+            </DockPanel>
+            <CheckBox IsChecked="{x:Static my:RegistryData.AutoGenerateName}" Content="Автоматично створювати ім'я" Margin="0,5"/>
+            <CheckBox IsChecked="{x:Static my:RegistryData.MinimizeToTray}" Content="Згортувати в трей" Margin="0,5"/>
+            <CheckBox IsChecked="{x:Static my:RegistryData.TrayNotification}" Content="Показувати сповіщення" Margin="0,5"/>
+            <CheckBox IsChecked="{x:Static my:RegistryData.LatestSavePathAsDefault}" Content="Папка останнього скріну стає стандартною" Margin="0,5"/>
+            <TextBlock>Стандартна папка для скріншотів:</TextBlock>
+            <ContentControl Name="panel_Directory" Margin="0, 0">
+                <ContentControl.Template>
+                    <ControlTemplate>
+                        <DockPanel>
+                            <Button Name="b_SetDirectory" DockPanel.Dock="Right" Margin="0">•••</Button>
+                            <TextBox Name="tb_Directory" MaxLines="1" Text="{x:Static my:RegistryData.SavePath}" IsReadOnly="True"></TextBox>
+                        </DockPanel>
+                    </ControlTemplate>
+                </ContentControl.Template>
+            </ContentControl>
+            <Button Content="Стандартні налаштування" MaxWidth="175" Margin="10"/>
+        </StackPanel>
+    </Grid>
+</Window>

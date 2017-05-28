@@ -19,6 +19,7 @@ using WinForms = System.Windows.Forms; // тільки що дізнався, щ
 using System.Reflection;
 using Microsoft.Win32;
 using System.Windows.Media.Animation;
+using WpfApplication.Data;
 
 namespace WpfApplication
 {
@@ -44,10 +45,7 @@ namespace WpfApplication
                 img_Preview.Source = image = Clipboard.GetImage();
                 panel_Control.IsEnabled = true;
                 tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
-
-                RegistryKey rKey = Registry.CurrentUser.OpenSubKey(@"Software\PrintScreen Saver");
-                if (rKey != null && string.IsNullOrEmpty(tb_Directory.Text))
-                    tb_Directory.Text = rKey.GetValue("SavePath").ToString();
+                    tb_Directory.Text = RegistryData.SavePath;
             }
         }
 
@@ -109,7 +107,8 @@ namespace WpfApplication
                 BitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fileStream);
-                AddPathToRegedit(tb_Directory.Text);
+                RegistryData.SavePath = tb_Directory.Text;
+                //AddPathToRegedit(tb_Directory.Text);
             }
         }
 
@@ -123,10 +122,15 @@ namespace WpfApplication
             RegistryKey rKey = Registry.CurrentUser.OpenSubKey(@"Software\PrintScreen Saver", true);
             if (rKey == null)
                 rKey = Registry.CurrentUser.OpenSubKey("Software", true).CreateSubKey("PrintScreen Saver");
-            rKey.SetValue("SavePath", path);
+            rKey.SetValue("Save Path", path);
             rKey.Close();
 
             return true;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            new WindowSettings().ShowDialog();
         }
     }
 }

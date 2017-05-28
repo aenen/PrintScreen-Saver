@@ -11,24 +11,29 @@
             <RowDefinition/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
-        <Border Margin="11,10,9,0" Cursor="Hand" BorderThickness="5" SizeChanged="Border_SizeChanged" PreviewMouseLeftButtonDown="img_Preview_PreviewMouseLeftButtonDown">
-            <Border.BorderBrush>
-                <LinearGradientBrush x:Name="lgb_Border" StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="White" Offset="3" />
-                    <GradientStop Color="Black" Offset="0" />
-                </LinearGradientBrush>                
-            </Border.BorderBrush>
-            <Border.Background>
-                <LinearGradientBrush x:Name="lgb_Background" StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="RoyalBlue" Offset="0" />
-                    <GradientStop Color="White" Offset="3" />
-                </LinearGradientBrush>
-            </Border.Background>
-            <Image Name="img_Preview"></Image>
-        </Border>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Налаштування" Click="MenuItem_Click"></MenuItem>
+            </Menu>
+            <Border Margin="11,10,9,0" Cursor="Hand" BorderThickness="5" SizeChanged="Border_SizeChanged" PreviewMouseLeftButtonDown="img_Preview_PreviewMouseLeftButtonDown">
+                <Border.BorderBrush>
+                    <LinearGradientBrush x:Name="lgb_Border" StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="White" Offset="3" />
+                        <GradientStop Color="Black" Offset="0" />
+                    </LinearGradientBrush>
+                </Border.BorderBrush>
+                <Border.Background>
+                    <LinearGradientBrush x:Name="lgb_Background" StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="RoyalBlue" Offset="0" />
+                        <GradientStop Color="White" Offset="3" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Image Name="img_Preview"></Image>
+            </Border>
+        </DockPanel>
         <DockPanel Name="panel_Control" Grid.Row="1" IsEnabled="False">
             <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Margin="10" MaxWidth="200" MinWidth="75" Click="b_Save_Click"></Button>
-            <TextBox Name="tb_Name" DockPanel.Dock="Right" MaxLines="1" MinWidth="100" Margin="10"></TextBox>
+            <TextBox Name="tb_Name" DockPanel.Dock="Right" MaxLines="1" Width="100" Margin="10"></TextBox>
             <ContentControl Name="panel_Directory" Margin="10">
                 <ContentControl.Template>
                     <ControlTemplate>
