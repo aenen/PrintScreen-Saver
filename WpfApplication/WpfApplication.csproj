@@ -57,6 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\ExtensionsData.cs" />
     <Compile Include="Data\RegistryData.cs" />
     <Compile Include="WindowSettings.xaml.cs">
       <DependentUpon>WindowSettings.xaml</DependentUpon>

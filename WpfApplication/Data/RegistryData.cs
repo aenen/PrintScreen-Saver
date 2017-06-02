@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WpfApplication.Data
 {
-    public static class RegistryData
+    public class RegistryData
     {
         static private RegistryKey regKey = Registry.CurrentUser;
 
@@ -25,9 +25,18 @@ namespace WpfApplication.Data
 
         public static Color FavColor
         {
+            //вкласти всю логіку в 1 рядок коду - безцінно
             get { return Registry.GetValue(regKey.ToString(), "FavColor", null) != null ? (Color)ColorConverter.ConvertFromString(regKey.GetValue("FavColor").ToString()) : (Color)ColorConverter.ConvertFromString(SetValue("FavColor", Colors.RoyalBlue).ToString()); }
             set { regKey.SetValue("FavColor", value); }
         }
+
+        #region SolidColorBrush FavColor
+        public static SolidColorBrush FavColorSB
+        {
+            get { return new SolidColorBrush(FavColor); }
+            set { regKey.SetValue("FavColor", value.Color); }
+        }
+        #endregion
 
         public static bool MinimizeToTray
         {

@@ -87,13 +87,13 @@ namespace WpfApplication
             paS.To = new Point(1, 0);
             paS.AutoReverse = true;
             paS.RepeatBehavior = RepeatBehavior.Forever;
-            paS.Duration = new Duration(new TimeSpan(0, 0, 20));
+            paS.Duration = new Duration(new TimeSpan(0, 0, 30));
             PointAnimation paE = new PointAnimation();
             paE.From = new Point(1, 1);
             paE.To = new Point(0, 1);
             paE.AutoReverse = true;
             paE.RepeatBehavior = RepeatBehavior.Forever;          
-            paE.Duration = new Duration(new TimeSpan(0, 0, 20));
+            paE.Duration = new Duration(new TimeSpan(0, 0, 30));
             lgb_Border.BeginAnimation(LinearGradientBrush.StartPointProperty, paS);
             lgb_Border.BeginAnimation(LinearGradientBrush.EndPointProperty, paE);
             lgb_Background.BeginAnimation(LinearGradientBrush.StartPointProperty, paS);
@@ -108,24 +108,12 @@ namespace WpfApplication
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fileStream);
                 RegistryData.SavePath = tb_Directory.Text;
-                //AddPathToRegedit(tb_Directory.Text);
             }
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
         {
             if (WindowState == WindowState.Minimized) this.Hide();
-        }
-
-        bool AddPathToRegedit(string path)
-        {
-            RegistryKey rKey = Registry.CurrentUser.OpenSubKey(@"Software\PrintScreen Saver", true);
-            if (rKey == null)
-                rKey = Registry.CurrentUser.OpenSubKey("Software", true).CreateSubKey("PrintScreen Saver");
-            rKey.SetValue("Save Path", path);
-            rKey.Close();
-
-            return true;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)

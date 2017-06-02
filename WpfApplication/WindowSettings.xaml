@@ -6,24 +6,29 @@
         xmlns:local="clr-namespace:WpfApplication"
         xmlns:my="clr-namespace:WpfApplication.Data"
         mc:Ignorable="d"
-        Title="WindowSettings" Height="300" Width="300" ResizeMode="NoResize">
+        Title="Налаштування" Height="300" Width="300" ResizeMode="NoResize" Loaded="Window_Loaded">
+    <Window.Resources>
+        <my:RegistryData x:Key="registryData"/>
+    </Window.Resources>
     <Grid>
         <StackPanel Orientation="Vertical" Margin="10">
             <DockPanel Margin="0,5">
                 <TextBlock DockPanel.Dock="Left" Text="Улюблений колір:"/>
-                <Canvas Name="panel_Color" MaxWidth="100" Cursor="Hand"/>
+                <Border BorderBrush="Black" BorderThickness="1" Margin="10,0" >
+                    <Canvas Name="panel_Color" Cursor="Hand" Background="{Binding Source={StaticResource registryData}, Path=FavColorSB, Mode=TwoWay}" MouseLeftButtonUp="panel_Color_MouseLeftButtonUp"/>
+                </Border>
             </DockPanel>
-            <CheckBox IsChecked="{x:Static my:RegistryData.AutoGenerateName}" Content="Автоматично створювати ім'я" Margin="0,5"/>
-            <CheckBox IsChecked="{x:Static my:RegistryData.MinimizeToTray}" Content="Згортувати в трей" Margin="0,5"/>
-            <CheckBox IsChecked="{x:Static my:RegistryData.TrayNotification}" Content="Показувати сповіщення" Margin="0,5"/>
-            <CheckBox IsChecked="{x:Static my:RegistryData.LatestSavePathAsDefault}" Content="Папка останнього скріну стає стандартною" Margin="0,5"/>
+            <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=AutoGenerateName, Mode=TwoWay}" Content="Автоматично створювати ім'я" Margin="0,5"/>
+            <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=MinimizeToTray, Mode=TwoWay}" Content="Згортувати в трей" Margin="0,5"/>
+            <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=TrayNotification, Mode=TwoWay}" Content="Показувати сповіщення" Margin="0,5"/>
+            <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=LatestSavePathAsDefault, Mode=TwoWay}" Content="Папка останнього скріну стає стандартною" Margin="0,5"/>
             <TextBlock>Стандартна папка для скріншотів:</TextBlock>
             <ContentControl Name="panel_Directory" Margin="0, 0">
                 <ContentControl.Template>
                     <ControlTemplate>
                         <DockPanel>
-                            <Button Name="b_SetDirectory" DockPanel.Dock="Right" Margin="0">•••</Button>
-                            <TextBox Name="tb_Directory" MaxLines="1" Text="{x:Static my:RegistryData.SavePath}" IsReadOnly="True"></TextBox>
+                            <Button Name="b_SetDirectory" Click="b_SetDirectory_Click" DockPanel.Dock="Right" Margin="0">•••</Button>
+                            <TextBox Name="tb_Directory" MaxLines="1" Text="{Binding Source={StaticResource registryData}, Path=SavePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"></TextBox>
                         </DockPanel>
                     </ControlTemplate>
                 </ContentControl.Template>
