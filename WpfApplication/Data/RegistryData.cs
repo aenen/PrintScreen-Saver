@@ -5,11 +5,15 @@ using System.Windows.Media;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace WpfApplication.Data
 {
     public class RegistryData
     {
+        public static event EventHandler FavColorChanged;
+
         static private RegistryKey regKey = Registry.CurrentUser;
 
         static RegistryData()
@@ -27,14 +31,18 @@ namespace WpfApplication.Data
         {
             //вкласти всю логіку в 1 рядок коду - безцінно
             get { return Registry.GetValue(regKey.ToString(), "FavColor", null) != null ? (Color)ColorConverter.ConvertFromString(regKey.GetValue("FavColor").ToString()) : (Color)ColorConverter.ConvertFromString(SetValue("FavColor", Colors.RoyalBlue).ToString()); }
-            set { regKey.SetValue("FavColor", value); }
+            set
+            {
+                regKey.SetValue("FavColor", value);
+                OnPropertyChanged();
+            }
         }
 
         #region SolidColorBrush FavColor
         public static SolidColorBrush FavColorSB
         {
             get { return new SolidColorBrush(FavColor); }
-            set { regKey.SetValue("FavColor", value.Color); }
+            set { FavColor = value.Color; }
         }
         #endregion
 
@@ -66,6 +74,22 @@ namespace WpfApplication.Data
         {
             regKey.SetValue(name, value);
             return value;
+        }
+        private static void OnPropertyChanged()
+        {
+            if (FavColorChanged != null)
+            {
+                FavColorChanged(null, EventArgs.Empty);
+            }
+        }
+
+        public static void DefaultSettings()
+        {
+            SavePath = "";
+            FavColor = Colors.RoyalBlue;
+            MinimizeToTray = true;
+            TrayNotification = false;
+            AutoGenerateName = true;
         }
     }
 }

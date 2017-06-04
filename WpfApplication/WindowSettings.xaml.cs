@@ -51,5 +51,10 @@ namespace WpfApplication
             var template = panel_Directory.Template;
             tb_Directory = (TextBox)template.FindName("tb_Directory", panel_Directory);
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //RegistryData.DefaultSettings();
+        }
     }
 }

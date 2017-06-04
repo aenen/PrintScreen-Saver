@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApplication"
         xmlns:my="clr-namespace:WpfApplication.Data"
         mc:Ignorable="d"
-        Title="PrintScreen Saver" Icon="Tray.ico" Height="350" Width="525" Loaded="Window_Loaded" StateChanged="Window_StateChanged">
+        Title="PrintScreen Saver" Icon="Tray.ico" Height="350" Width="525" Loaded="Window_Loaded" Closed="Window_Closed" StateChanged="Window_StateChanged">
     <Window.Resources>
         <my:RegistryData x:Key="registryData"/>
     </Window.Resources>
@@ -17,7 +17,14 @@
         </Grid.RowDefinitions>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="Налаштування" Click="MenuItem_Click"></MenuItem>
+                <MenuItem Header="Налаштування" Click="MenuItem_Click" Margin="10,0,0,0"></MenuItem>
+                <MenuItem Header="Допомога">
+                    <MenuItem Header="Довідка"></MenuItem>
+                    <MenuItem Header="Помолитись"></MenuItem>
+                    <MenuItem Header="Перевірити оновлення"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Про програму"></MenuItem>
+                </MenuItem>
             </Menu>
             <Border Margin="11,10,9,0" Cursor="Hand" BorderThickness="5" SizeChanged="Border_SizeChanged" PreviewMouseLeftButtonDown="img_Preview_PreviewMouseLeftButtonDown">
                 <Border.BorderBrush>                    
@@ -32,11 +39,51 @@
                         <GradientStop Color="White" Offset="3" />
                     </LinearGradientBrush>
                 </Border.Background>
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Border.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <PointAnimation
+                                    Storyboard.TargetName="lgb_Background"
+                                    Storyboard.TargetProperty="StartPoint"
+                                    From="0,0"
+                                    To="1,0"
+                                    AutoReverse="True"
+                                    Duration="0:0:30"
+                                    RepeatBehavior="Forever"/>
+                                <PointAnimation
+                                    Storyboard.TargetName="lgb_Background"
+                                    Storyboard.TargetProperty="EndPoint"
+                                    From="1,1"
+                                    To="0,1"
+                                    AutoReverse="True"
+                                    Duration="0:0:30"
+                                    RepeatBehavior="Forever"/>
+                                <PointAnimation
+                                    Storyboard.TargetName="lgb_Border"
+                                    Storyboard.TargetProperty="StartPoint"
+                                    From="0,0"
+                                    To="1,0"
+                                    AutoReverse="True"
+                                    Duration="0:0:30"
+                                    RepeatBehavior="Forever"/>
+                                <PointAnimation
+                                    Storyboard.TargetName="lgb_Border"
+                                    Storyboard.TargetProperty="EndPoint"
+                                    From="1,1"
+                                    To="0,1"
+                                    AutoReverse="True"
+                                    Duration="0:0:30"
+                                    RepeatBehavior="Forever"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
                 <Image Name="img_Preview"></Image>
             </Border>
         </DockPanel>
         <DockPanel Name="panel_Control" Grid.Row="1" IsEnabled="False">
-            <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Margin="10" MaxWidth="200" MinWidth="75" Click="b_Save_Click"></Button>
+            <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Background="White" Margin="10" MaxWidth="200" MinWidth="75" Click="b_Save_Click"/>
             <TextBox Name="tb_Name" DockPanel.Dock="Right" MaxLines="1" Width="100" Margin="10"></TextBox>
             <ContentControl Name="panel_Directory" Margin="10">
                 <ContentControl.Template>

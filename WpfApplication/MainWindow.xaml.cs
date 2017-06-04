@@ -44,8 +44,8 @@ namespace WpfApplication
             {
                 img_Preview.Source = image = Clipboard.GetImage();
                 panel_Control.IsEnabled = true;
-                tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
-                    tb_Directory.Text = RegistryData.SavePath;
+                tb_Directory.Text = RegistryData.SavePath;
+                if (RegistryData.AutoGenerateName) tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
             }
         }
 
@@ -81,24 +81,9 @@ namespace WpfApplication
                     this.Show();
                     this.WindowState = WindowState.Normal;
                 };
-            
-            PointAnimation paS = new PointAnimation();
-            paS.From = new Point(0, 0);
-            paS.To = new Point(1, 0);
-            paS.AutoReverse = true;
-            paS.RepeatBehavior = RepeatBehavior.Forever;
-            paS.Duration = new Duration(new TimeSpan(0, 0, 30));
-            PointAnimation paE = new PointAnimation();
-            paE.From = new Point(1, 1);
-            paE.To = new Point(0, 1);
-            paE.AutoReverse = true;
-            paE.RepeatBehavior = RepeatBehavior.Forever;          
-            paE.Duration = new Duration(new TimeSpan(0, 0, 30));
-            lgb_Border.BeginAnimation(LinearGradientBrush.StartPointProperty, paS);
-            lgb_Border.BeginAnimation(LinearGradientBrush.EndPointProperty, paE);
-            lgb_Background.BeginAnimation(LinearGradientBrush.StartPointProperty, paS);
-            lgb_Background.BeginAnimation(LinearGradientBrush.EndPointProperty, paE);
-        }
+
+            RegistryData.FavColorChanged += (s, ea) => lgb_Background.GradientStops[0].Color = RegistryData.FavColor;
+        }        
 
         private void b_Save_Click(object sender, RoutedEventArgs e)
         {
@@ -107,18 +92,23 @@ namespace WpfApplication
                 BitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fileStream);
-                RegistryData.SavePath = tb_Directory.Text;
+                if (RegistryData.LatestSavePathAsDefault) RegistryData.SavePath = tb_Directory.Text;
             }
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
         {
-            if (WindowState == WindowState.Minimized) this.Hide();
+            if (WindowState == WindowState.Minimized && RegistryData.MinimizeToTray) this.Hide();
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             new WindowSettings().ShowDialog();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            ni.Visible = false;
         }
     }
 }
