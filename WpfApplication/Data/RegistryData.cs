@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace WpfApplication.Data
 {
@@ -14,13 +15,9 @@ namespace WpfApplication.Data
     {
         public static event EventHandler FavColorChanged;
 
-        static private RegistryKey regKey = Registry.CurrentUser;
-
-        static RegistryData()
-        {
-            regKey = regKey.CreateSubKey("Software\\PrintScreen Saver", RegistryKeyPermissionCheck.ReadWriteSubTree);
-        }
-
+        static private RegistryKey regKey = Registry.CurrentUser.CreateSubKey("Software\\PrintScreen Saver", RegistryKeyPermissionCheck.ReadWriteSubTree);
+        static private RegistryKey regApp = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+        
         public static string SavePath
         {
             get { return Registry.GetValue(regKey.ToString(), "SavePath", null) != null? (string)regKey.GetValue("SavePath") : null; }
@@ -70,6 +67,18 @@ namespace WpfApplication.Data
             set { regKey.SetValue("AutoGenerateName", value); }
         }
 
+        public static bool Autorun
+        {
+            get { return Registry.GetValue(regApp.ToString(), "PrintScreenSaver", null) != null ? true : false; }
+            set
+            {
+                if (value)
+                    regApp.SetValue("PrintScreenSaver", Assembly.GetExecutingAssembly().Location);
+                else
+                    regApp.DeleteValue("PrintScreenSaver", false);
+            }
+        }
+
         private static object SetValue(string name, object value)
         {
             regKey.SetValue(name, value);
@@ -90,6 +99,8 @@ namespace WpfApplication.Data
             MinimizeToTray = true;
             TrayNotification = false;
             AutoGenerateName = true;
+            LatestSavePathAsDefault = true;
+            Autorun = false;
         }
     }
 }
