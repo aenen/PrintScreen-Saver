@@ -19,13 +19,12 @@ namespace WpfApplication
         TextBox tb_Directory;
         BitmapSource image;
         WinForms.NotifyIcon ni = new WinForms.NotifyIcon();
-        int counter = 0;
 
         public MainWindow()
         {
             InitializeComponent();
         }
-        
+
         private void Border_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (img_Preview.Source != null)
@@ -51,13 +50,26 @@ namespace WpfApplication
 
             ni.Text = Title;
             ni.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+            ni.BalloonTipText = "Я бачу нове зображення! Зберегти?";
+            ni.BalloonTipTitle = "Новий скріншот.";
+            ni.ContextMenu = new System.Windows.Forms.ContextMenu { Name = "Im Your Menu" };
+            WinForms.MenuItem[] mItems = new WinForms.MenuItem[]
+            {
+                new WinForms.MenuItem { Text = "exit", Checked = RegistryData.TrayNotification },
+                new WinForms.MenuItem { Index=1, Text = "Підтвердження для збереження", Checked = RegistryData.ConfirmSave },
+                new WinForms.MenuItem { Text = "Вихід" }
+            };
+            mItems[2].Click += (s, ea) => this.Close();
+
+            ni.ContextMenu.MenuItems.AddRange(mItems);
+
             ni.Visible = true;
             ni.Click += (sndr, args) =>
             {
                 this.Show();
                 this.WindowState = WindowState.Normal;
             };
-            
+
             RegistryData.FavColorChanged += (s, ea) => lgb_Background.GradientStops[0].Color = RegistryData.FavColor;
 
             new ClipboardManager(this).ClipboardChanged += ClipboardChanged;
@@ -72,6 +84,12 @@ namespace WpfApplication
                 panel_Control.IsEnabled = true;
                 tb_Directory.Text = RegistryData.SavePath;
                 if (RegistryData.AutoGenerateName) tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
+                if (WindowState == WindowState.Minimized)
+                {
+                    ni.BalloonTipText = "Я бачу нове зображення! Зберегти?";
+                    ni.BalloonTipTitle = "Новий скріншот.";
+                    ni.ShowBalloonTip(1000);
+                }
             }
         }
 

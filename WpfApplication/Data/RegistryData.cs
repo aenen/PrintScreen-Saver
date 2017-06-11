@@ -61,6 +61,12 @@ namespace WpfApplication.Data
             set { regKey.SetValue("TrayNotification", value); }
         }
 
+        public static bool ConfirmSave
+        {
+            get { return Registry.GetValue(regKey.ToString(), "ConfirmSave", null) != null ? Convert.ToBoolean(regKey.GetValue("ConfirmSave")) : (bool)SetValue("ConfirmSave", true); }
+            set { regKey.SetValue("ConfirmSave", value); }
+        }
+
         public static bool AutoGenerateName
         {
             get { return Registry.GetValue(regKey.ToString(), "AutoGenerateName", null) != null ? Convert.ToBoolean(regKey.GetValue("AutoGenerateName")) : (bool)SetValue("AutoGenerateName", true); }
@@ -101,6 +107,7 @@ namespace WpfApplication.Data
             AutoGenerateName = true;
             LatestSavePathAsDefault = true;
             Autorun = false;
+            ConfirmSave = true;
         }
     }
 }
