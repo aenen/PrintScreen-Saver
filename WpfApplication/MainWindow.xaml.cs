@@ -19,23 +19,13 @@ namespace WpfApplication
         TextBox tb_Directory;
         BitmapSource image;
         WinForms.NotifyIcon ni = new WinForms.NotifyIcon();
+        int counter = 0;
 
         public MainWindow()
         {
             InitializeComponent();
         }
-
-        private void img_Preview_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (Clipboard.ContainsImage())
-            {
-                img_Preview.Source = image = Clipboard.GetImage();
-                panel_Control.IsEnabled = true;
-                tb_Directory.Text = RegistryData.SavePath;
-                if (RegistryData.AutoGenerateName) tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
-            }
-        }
-
+        
         private void Border_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (img_Preview.Source != null)
@@ -62,15 +52,28 @@ namespace WpfApplication
             ni.Text = Title;
             ni.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
             ni.Visible = true;
-            ni.Click +=
-                delegate (object sndr, EventArgs args)
-                {
-                    this.Show();
-                    this.WindowState = WindowState.Normal;
-                };
-
+            ni.Click += (sndr, args) =>
+            {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+            };
+            
             RegistryData.FavColorChanged += (s, ea) => lgb_Background.GradientStops[0].Color = RegistryData.FavColor;
-        }        
+
+            new ClipboardManager(this).ClipboardChanged += ClipboardChanged;
+            ClipboardChanged(this, EventArgs.Empty);
+        }
+
+        private void ClipboardChanged(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsImage())
+            {
+                img_Preview.Source = image = Clipboard.GetImage();
+                panel_Control.IsEnabled = true;
+                tb_Directory.Text = RegistryData.SavePath;
+                if (RegistryData.AutoGenerateName) tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
+            }
+        }
 
         private void b_Save_Click(object sender, RoutedEventArgs e)
         {
@@ -96,6 +99,7 @@ namespace WpfApplication
         private void Window_Closed(object sender, EventArgs e)
         {
             ni.Visible = false;
+            ni.Icon = null;
         }
     }
 }

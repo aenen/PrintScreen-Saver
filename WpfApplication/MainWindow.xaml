@@ -18,15 +18,15 @@
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Налаштування" Click="MenuItem_Click" Margin="10,0,0,0"></MenuItem>
-                <MenuItem Header="Допомога">
+                <!--<MenuItem Header="Допомога">
                     <MenuItem Header="Довідка"></MenuItem>
                     <MenuItem Header="Помолитись"></MenuItem>
                     <MenuItem Header="Перевірити оновлення"></MenuItem>
                     <Separator></Separator>
                     <MenuItem Header="Про програму"></MenuItem>
-                </MenuItem>
+                </MenuItem>-->
             </Menu>
-            <Border Margin="11,10,9,0" Cursor="Hand" BorderThickness="5" SizeChanged="Border_SizeChanged" PreviewMouseLeftButtonDown="img_Preview_PreviewMouseLeftButtonDown">
+            <Border Margin="11,10,9,0" BorderThickness="5" SizeChanged="Border_SizeChanged">
                 <Border.BorderBrush>                    
                     <LinearGradientBrush x:Name="lgb_Border" StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="White" Offset="3" />
@@ -83,13 +83,13 @@
             </Border>
         </DockPanel>
         <DockPanel Name="panel_Control" Grid.Row="1" IsEnabled="False">
-            <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Background="White" Margin="10" MaxWidth="200" MinWidth="75" Click="b_Save_Click"/>
+            <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Margin="10" MaxWidth="200" MinWidth="75" Click="b_Save_Click"/>
             <TextBox Name="tb_Name" DockPanel.Dock="Right" MaxLines="1" Width="100" Margin="10"></TextBox>
             <ContentControl Name="panel_Directory" Margin="10">
                 <ContentControl.Template>
                     <ControlTemplate>
                         <DockPanel>
-                            <Button Name="b_SetDirectory" Click="b_SetDirectory_Click" DockPanel.Dock="Right" Margin="0">•••</Button>
+                            <Button Name="b_SetDirectory" Click="b_SetDirectory_Click" Background="WhiteSmoke" DockPanel.Dock="Right" Margin="0">•••</Button>
                             <TextBox Name="tb_Directory" MaxLines="1" IsReadOnly="True"></TextBox>
                         </DockPanel>
                     </ControlTemplate>
