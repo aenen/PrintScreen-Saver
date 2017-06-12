@@ -19,6 +19,7 @@ namespace WpfApplication
         TextBox tb_Directory;
         BitmapSource image;
         WinForms.NotifyIcon ni = new WinForms.NotifyIcon();
+        bool menuClose = false;
 
         public MainWindow()
         {
@@ -52,22 +53,53 @@ namespace WpfApplication
             ni.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
             ni.BalloonTipText = "Я бачу нове зображення! Зберегти?";
             ni.BalloonTipTitle = "Новий скріншот.";
+            ni.BalloonTipClicked += (s, ea) =>
+            {
+                if (RegistryData.ConfirmSave)
+                {
+                    var mb = MessageBox.Show($"{tb_Name.Text}.png → {tb_Directory.Text}", "Зберегти скріншот?",MessageBoxButton.YesNo);
+                    if (mb == MessageBoxResult.Yes)
+                        b_Save_Click(this, null);
+                }
+                else
+                    b_Save_Click(this, null);
+            };
             ni.ContextMenu = new System.Windows.Forms.ContextMenu { Name = "Im Your Menu" };
             WinForms.MenuItem[] mItems = new WinForms.MenuItem[]
             {
-                new WinForms.MenuItem { Text = "exit", Checked = RegistryData.TrayNotification },
-                new WinForms.MenuItem { Index=1, Text = "Підтвердження для збереження", Checked = RegistryData.ConfirmSave },
+                new WinForms.MenuItem { Text = "Сповіщення", Checked = RegistryData.TrayNotification },
+                new WinForms.MenuItem { Text = "Підтвердження збереження", Checked = RegistryData.ConfirmSave },
+                new WinForms.MenuItem { Text = "-" },
                 new WinForms.MenuItem { Text = "Вихід" }
             };
-            mItems[2].Click += (s, ea) => this.Close();
-
+            mItems[0].Click += (s, ea) =>
+            {
+                var obj = s as WinForms.MenuItem;
+                obj.Checked = !obj.Checked;
+                RegistryData.TrayNotification = obj.Checked;
+            };
+            mItems[1].Click += (s, ea) =>
+            {
+                var obj = s as WinForms.MenuItem;
+                obj.Checked = !obj.Checked;
+                RegistryData.ConfirmSave = obj.Checked;
+            };
+            mItems[3].Click += (s, ea) =>
+            {
+                menuClose = true;
+                this.Close();
+                menuClose = false;
+            };
             ni.ContextMenu.MenuItems.AddRange(mItems);
 
             ni.Visible = true;
-            ni.Click += (sndr, args) =>
+            ni.MouseClick += (sndr, args) =>
             {
-                this.Show();
-                this.WindowState = WindowState.Normal;
+                if (args.Button == WinForms.MouseButtons.Left)
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                }
             };
 
             RegistryData.FavColorChanged += (s, ea) => lgb_Background.GradientStops[0].Color = RegistryData.FavColor;
@@ -86,9 +118,7 @@ namespace WpfApplication
                 if (RegistryData.AutoGenerateName) tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
                 if (WindowState == WindowState.Minimized)
                 {
-                    ni.BalloonTipText = "Я бачу нове зображення! Зберегти?";
-                    ni.BalloonTipTitle = "Новий скріншот.";
-                    ni.ShowBalloonTip(1000);
+                    if (RegistryData.TrayNotification) ni.ShowBalloonTip(1000);
                 }
             }
         }
@@ -112,12 +142,20 @@ namespace WpfApplication
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             new WindowSettings().ShowDialog();
-        }
+        }        
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ni.Visible = false;
-            ni.Icon = null;
+            if (RegistryData.MinimizeToTray && !menuClose)
+            {
+                e.Cancel = true;
+                WindowState = WindowState.Minimized;
+            }
+            else
+            {
+                ni.Visible = false;
+                ni.Icon = null;
+            }
         }
     }
 }

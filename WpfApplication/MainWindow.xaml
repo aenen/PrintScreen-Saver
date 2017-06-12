@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApplication"
         xmlns:my="clr-namespace:WpfApplication.Data"
         mc:Ignorable="d"
-        Title="PrintScreen Saver" Icon="Tray.ico" Height="350" Width="525" Loaded="Window_Loaded" Closed="Window_Closed" StateChanged="Window_StateChanged">
+        Title="PrintScreen Saver" Icon="Tray.ico" Height="350" Width="525" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
     <Window.Resources>
         <my:RegistryData x:Key="registryData"/>
     </Window.Resources>
