@@ -53,6 +53,9 @@
     <ApplicationIcon>Tray.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MyLibrary">
+      <HintPath>..\..\..\..\Users\Ярослав\Google Диск\Документы\#My Projects\My Library (ver. 12345)\MyLibrary\bin\Debug\MyLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />

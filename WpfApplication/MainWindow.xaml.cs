@@ -8,6 +8,8 @@ using System.IO;
 using WinForms = System.Windows.Forms; // тільки що дізнався, що так можна робити. круто
 using System.Reflection;
 using WpfApplication.Data;
+using MyLibrary;
+using System.Collections.Generic;
 
 namespace WpfApplication
 {
@@ -53,18 +55,10 @@ namespace WpfApplication
             ni.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
             ni.BalloonTipText = "Я бачу нове зображення! Зберегти?";
             ni.BalloonTipTitle = "Новий скріншот.";
-            ni.BalloonTipClicked += (s, ea) =>
-            {
-                if (RegistryData.ConfirmSave)
-                {
-                    var mb = MessageBox.Show($"{tb_Name.Text}.png → {tb_Directory.Text}", "Зберегти скріншот?",MessageBoxButton.YesNo);
-                    if (mb == MessageBoxResult.Yes)
-                        b_Save_Click(this, null);
-                }
-                else
-                    b_Save_Click(this, null);
+            ni.BalloonTipClicked += (s, ea) => {
+                b_Save_Click(this, null);
             };
-            ni.ContextMenu = new System.Windows.Forms.ContextMenu { Name = "Im Your Menu" };
+            ni.ContextMenu = new WinForms.ContextMenu { Name = "Im Your Menu" };
             WinForms.MenuItem[] mItems = new WinForms.MenuItem[]
             {
                 new WinForms.MenuItem { Text = "Сповіщення", Checked = RegistryData.TrayNotification },
@@ -88,7 +82,6 @@ namespace WpfApplication
             {
                 menuClose = true;
                 this.Close();
-                menuClose = false;
             };
             ni.ContextMenu.MenuItems.AddRange(mItems);
 
@@ -98,7 +91,7 @@ namespace WpfApplication
                 if (args.Button == WinForms.MouseButtons.Left)
                 {
                     this.Show();
-                    this.WindowState = WindowState.Normal;
+                    WindowState = WindowState.Normal;
                 }
             };
 
@@ -114,9 +107,9 @@ namespace WpfApplication
             {
                 img_Preview.Source = image = Clipboard.GetImage();
                 panel_Control.IsEnabled = true;
-                tb_Directory.Text = RegistryData.SavePath;
+                tb_Directory.Text = string.IsNullOrEmpty(tb_Directory.Text)? RegistryData.SavePath : tb_Directory.Text;
                 if (RegistryData.AutoGenerateName) tb_Name.Text = DateTime.Now.ToString("yyyy'-'MM'-'dd'_'HH'-'mm'-'ss");
-                if (WindowState == WindowState.Minimized)
+                if (!IsVisible || WindowState == WindowState.Minimized)
                 {
                     if (RegistryData.TrayNotification) ni.ShowBalloonTip(1000);
                 }
@@ -125,24 +118,52 @@ namespace WpfApplication
 
         private void b_Save_Click(object sender, RoutedEventArgs e)
         {
+            if (!MyDataCorrection.CombineMethods(
+                new MyValidationTextBoxParams(MyDataCorrection.IsValidFilename, new[] { tb_Name }, true),
+                new MyValidationTextBoxParams(MyDataCorrection.IsBlank, new[] { tb_Directory }, false)))
+            {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+                return;
+            }
+
+            if (RegistryData.ConfirmSave && WindowState == WindowState.Minimized)
+            {
+                var mb = MessageBox.Show($"{tb_Name.Text}.png → TO → {tb_Directory.Text}", "Зберегти скріншот?", MessageBoxButton.YesNo);
+                if (mb == MessageBoxResult.No)
+                    return;
+            }
+
             using (var fileStream = new FileStream(System.IO.Path.Combine(tb_Directory.Text, tb_Name.Text + ".png"), FileMode.Create))
             {
                 BitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(fileStream);
                 if (RegistryData.LatestSavePathAsDefault) RegistryData.SavePath = tb_Directory.Text;
+                if (RegistryData.ShowExplorer)
+                {
+                    string argument = "/select, \"" + Path.Combine(tb_Directory.Text, tb_Name.Text + ".png") + "\"";
+                    System.Diagnostics.Process.Start("explorer.exe", argument);
+                }
             }
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
         {
-            if (WindowState == WindowState.Minimized && RegistryData.MinimizeToTray) this.Hide();
+            if (WindowState == WindowState.Minimized && RegistryData.MinimizeToTray)
+            {
+                this.Hide();
+            }
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            new WindowSettings().ShowDialog();
-        }        
+            if (new WindowSettings().ShowDialog() == true)
+            {
+                ni.ContextMenu.MenuItems[0].Checked = RegistryData.TrayNotification;
+                ni.ContextMenu.MenuItems[1].Checked = RegistryData.ConfirmSave;
+            }
+        }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

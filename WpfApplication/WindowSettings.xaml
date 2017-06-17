@@ -21,7 +21,7 @@
             <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=AutoGenerateName, Mode=TwoWay}" Content="Автоматично створювати ім'я" Margin="0,5"/>
             <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=Autorun, Mode=TwoWay}" Content="Автозапуск" Margin="0,5"/>
             <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=MinimizeToTray, Mode=TwoWay}" Content="Згортувати в трей" Margin="0,5"/>
-            <!--<CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=TrayNotification, Mode=TwoWay}" Content="Показувати сповіщення" Margin="0,5"/>-->
+            <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=ShowExplorer, Mode=TwoWay}" Content="Відкривати папку після збереження скріну" Margin="0,5"/>
             <CheckBox IsChecked="{Binding Source={StaticResource registryData}, Path=LatestSavePathAsDefault, Mode=TwoWay}" Content="Папка останнього скріну стає стандартною" Margin="0,5"/>
             <TextBlock>Стандартна папка для скріншотів:</TextBlock>
             <ContentControl Name="panel_Directory" Margin="0, 0">

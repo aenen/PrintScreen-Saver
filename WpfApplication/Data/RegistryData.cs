@@ -85,6 +85,12 @@ namespace WpfApplication.Data
             }
         }
 
+        public static bool ShowExplorer
+        {
+            get { return Registry.GetValue(regKey.ToString(), "ShowExplorer", null) != null ? Convert.ToBoolean(regKey.GetValue("ShowExplorer")) : (bool)SetValue("ShowExplorer", true); }
+            set { regKey.SetValue("ShowExplorer", value); }
+        }
+
         private static object SetValue(string name, object value)
         {
             regKey.SetValue(name, value);
@@ -103,11 +109,12 @@ namespace WpfApplication.Data
             SavePath = "";
             FavColor = Colors.RoyalBlue;
             MinimizeToTray = true;
-            TrayNotification = false;
+            TrayNotification = true;
             AutoGenerateName = true;
             LatestSavePathAsDefault = true;
             Autorun = false;
             ConfirmSave = true;
+            ShowExplorer = true;
         }
     }
 }
