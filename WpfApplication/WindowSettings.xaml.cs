@@ -6,18 +6,16 @@ using WpfApplication.Data;
 
 namespace WpfApplication
 {
-    /// <summary>
-    /// Interaction logic for WindowSettings.xaml
-    /// </summary>
     public partial class WindowSettings : Window
     {
-        TextBox tb_Directory;
+        TextBox tb_Directory;   // textbox з controltemplate // краще було б прив'язати його до якогось string SavePath
 
         public WindowSettings()
         {
             InitializeComponent();
         }
 
+        // Зміна кольору
         private void panel_Color_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             WinForms.ColorDialog cd = new WinForms.ColorDialog();
@@ -27,6 +25,7 @@ namespace WpfApplication
             }
         }
 
+        // Зміна дерикторії
         private void b_SetDirectory_Click(object sender, RoutedEventArgs e)
         {
             WinForms.FolderBrowserDialog dialog = new WinForms.FolderBrowserDialog();
@@ -36,12 +35,14 @@ namespace WpfApplication
             }
         }
 
+        // Ініціалізація
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var template = panel_Directory.Template;
             tb_Directory = (TextBox)template.FindName("tb_Directory", panel_Directory);
         }
 
+        // Клік "Стандартні налаштування"
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RegistryData.DefaultSettings();

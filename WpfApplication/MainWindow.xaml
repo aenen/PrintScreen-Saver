@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApplication"
         xmlns:my="clr-namespace:WpfApplication.Data"
         mc:Ignorable="d"
-        Title="PrintScreen Saver" Icon="Tray.ico" Height="350" Width="525" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
+        Title="PrintScreen Saver" Icon="Logo.ico" Height="350" Width="525" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
     <Window.Resources>
         <my:RegistryData x:Key="registryData"/>
     </Window.Resources>
@@ -26,7 +26,7 @@
                     <MenuItem Header="Про програму"></MenuItem>
                 </MenuItem>-->
             </Menu>
-            <Border Margin="11,10,9,0" BorderThickness="5" SizeChanged="Border_SizeChanged">
+            <Border Margin="10,10,10,0" BorderThickness="5" SizeChanged="Border_SizeChanged">
                 <Border.BorderBrush>                    
                     <LinearGradientBrush x:Name="lgb_Border" StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="White" Offset="3" />
@@ -83,7 +83,7 @@
             </Border>
         </DockPanel>
         <DockPanel Name="panel_Control" Grid.Row="1" IsEnabled="False">
-            <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Margin="10" MaxWidth="200" MinWidth="75" Click="b_Save_Click"/>
+            <Button Name="b_Save" DockPanel.Dock="Right" Content="Зберегти" Background="WhiteSmoke" Margin="10" MaxWidth="200" MinWidth="75" Click="b_Save_Click"/>
             <TextBox Name="tb_Name" DockPanel.Dock="Right" MaxLines="1" Width="100" Margin="10"></TextBox>
             <ContentControl Name="panel_Directory" Margin="10">
                 <ContentControl.Template>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApplication"
         xmlns:my="clr-namespace:WpfApplication.Data"
         mc:Ignorable="d"
-        Title="Налаштування" Height="300" Width="300" Icon="Tray.ico" ResizeMode="NoResize" Loaded="Window_Loaded">
+        Title="Налаштування" Height="300" Width="300" Icon="Logo.ico" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Window.Resources>
         <my:RegistryData x:Key="registryData"/>
     </Window.Resources>
